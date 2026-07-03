@@ -1,0 +1,24 @@
+{
+  "notes": "public Ride with GPS route ids discovered via the public Explore UI; only route JSON endpoints are used, no login-gated GPX export",
+  "routes": [
+    {"id": 49343309, "query": "minnesota gravel", "why": "Minnesota River Valley gravel/mixed route from Hopkins"},
+    {"id": 51796570, "query": "minnesota gravel", "why": "long mixed-surface north/east metro gravel DART route"},
+    {"id": 52799124, "query": "minnesota gravel", "why": "Minnesota River Bottoms mixed-surface route"},
+    {"id": 46518335, "query": "twin cities gravel", "why": "Twin cities mixed: Richfield to Farmington"},
+    {"id": 55118016, "query": "twin cities gravel", "why": "mixed road/gravel Twin Cities exploration"},
+    {"id": 50855733, "query": "almanzo gravel", "why": "Gravel Training - 60 Mile Luce Line"},
+    {"id": 50699193, "query": "almanzo gravel", "why": "Hopkins - South Tonka - St Boni gravel"},
+    {"id": 43136570, "query": "almanzo gravel", "why": "SW Suburbs Gravel - Hopkins Victoria Chaska"},
+    {"id": 30653596, "query": "almanzo gravel", "why": "Golden Valley to Wayzata Luce Line gravel"},
+    {"id": 52772361, "query": "almanzo gravel", "why": "Minnesota Randonneurs Western Wander 150k Gravel"},
+    {"id": 55848300, "query": "almanzo gravel", "why": "alternate 60-mile Luce Line gravel route"},
+    {"id": 44798460, "query": "almanzo gravel", "why": "Edina / Lone Lake mixed-surface gravel loop"},
+    {"id": 54396194, "query": "almanzo gravel", "why": "east metro 70-mile mixed-surface route"},
+    {"id": 54791148, "query": "almanzo gravel", "why": "TCBC MN Graveling route"},
+    {"id": 43799095, "query": "filthy 50 gravel", "why": "The Nxrth Country Style 50 Mile mostly-unpaved route"},
+    {"id": 54606030, "query": "filthy 50 gravel", "why": "SW 50 from Depot mostly-unpaved route"},
+    {"id": 54121635, "query": "filthy 50 gravel", "why": "Gateway / Grant / Hugo 50-mile gravel route"},
+    {"id": 32202009, "query": "filthy 50 gravel", "why": "Luce Line + Dakota Rail Trail 50-mile mixed surface loop"},
+    {"id": 51757175, "query": "stillwater gravel", "why": "St Paul to Stillwater route tagged road+gravel/mostly paved"}
+  ]
+}

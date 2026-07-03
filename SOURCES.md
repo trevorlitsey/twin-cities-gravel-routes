@@ -5,6 +5,8 @@
 - gravelmap public minnesota city browse pages
 - gravelmap public route pages
 - gravelmap public gpx endpoints
+- ride with gps public explore results
+- ride with gps public route json endpoints: `https://ridewithgps.com/routes/<id>.json`
 - OSRM public route API for drive estimates
 - OpenStreetMap tiles for display
 
@@ -13,8 +15,9 @@
 these are feasible as long as the route page or gpx file is public:
 
 1. ride with gps public routes
-   - best path: import manually saved/public gpx links or public route exports where accessible
-   - limitation: bulk search and exports may require account/session and should not be scraped aggressively
+   - current path: public explore UI discovery + public route json endpoints
+   - limitation: gpx/tcx export endpoints returned 401 on tested routes, so the app links source/data instead of pretending there is a public gpx export
+   - do not scrape aggressively or bypass account/session gates
 
 2. strava public routes/segments
    - best path: import specific route links or gpx files exported by the owner

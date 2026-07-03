@@ -1,9 +1,41 @@
 let state={routes:[],filtered:[],layers:new Map(),active:null,map:null};
 const $=id=>document.getElementById(id);
 const fmt=n=>n==null?'—':Number(n).toLocaleString();
+const filterDefaults={q:'',drive:'90',gravel:'60',min:'0',max:'130',sort:'drive'};
 function routeColor(r){const g=r.surface?.gravelPct??0; if(g>=85)return '#c6f26b'; if(g>=65)return '#8ccf57'; return '#f2d06b'}
 function routeShareUrl(r){const u=new URL(location.href); u.hash=r.id; return u.toString();}
-function popupHtml(r){return `<div class="popup"><strong>${r.name}</strong><br>${r.distanceMi} mi · ${r.surface.gravelPct}% gravel est · ${r.driveMinutes} min drive<br><a href="${r.sourceUrl}" target="_blank" rel="noreferrer">source</a> · <a href="${r.gpxUrl}" target="_blank" rel="noreferrer">gpx</a></div>`}
+function routeLinksHtml(r){
+  const links=[`<a href="${r.sourceUrl}" target="_blank" rel="noreferrer">source</a>`];
+  if(r.gpxUrl) links.push(`<a class="secondary" href="${r.gpxUrl}" target="_blank" rel="noreferrer">gpx</a>`);
+  if(r.dataUrl) links.push(`<a class="secondary" href="${r.dataUrl}" target="_blank" rel="noreferrer">data</a>`);
+  links.push(`<a class="secondary" href="${routeShareUrl(r)}">share</a>`);
+  return links.join('');
+}
+function popupHtml(r){return `<div class="popup"><strong>${r.name}</strong><br>${r.distanceMi} mi · ${r.surface.gravelPct}% gravel est · ${r.driveMinutes} min drive · ${r.source}<br>${routeLinksHtml(r).replaceAll('class="secondary" ','')}</div>`}
+function hydrateFiltersFromUrl(){
+  const p=new URLSearchParams(location.search);
+  if(p.has('q')) $('search').value=p.get('q')||'';
+  if(p.has('drive')) $('drive').value=p.get('drive');
+  if(p.has('gravel')) $('gravel').value=p.get('gravel');
+  if(p.has('min')) $('minMiles').value=p.get('min');
+  if(p.has('max')) $('maxMiles').value=p.get('max');
+  if(p.has('sort')) $('sort').value=p.get('sort');
+}
+function updateQueryString(){
+  const p=new URLSearchParams();
+  const values={
+    q:$('search').value.trim(),
+    drive:$('drive').value,
+    gravel:$('gravel').value,
+    min:$('minMiles').value,
+    max:$('maxMiles').value,
+    sort:$('sort').value,
+  };
+  for(const [k,v] of Object.entries(values)) if(String(v)!==filterDefaults[k]) p.set(k,v);
+  const u=new URL(location.href);
+  u.search=p.toString();
+  history.replaceState(null,'',u);
+}
 async function init(){
   const data=await fetch('./data/routes.json').then(r=>r.json());
   state.routes=data.routes;
@@ -17,7 +49,9 @@ async function init(){
   }).addTo(state.map);
   baseTiles.on('tileerror',()=>console.warn('base map tile failed to load; carto cdn may be temporarily unavailable'));
   L.circleMarker([data.home.lat,data.home.lon],{radius:7,color:'#fff',fillColor:'#c6f26b',fillOpacity:1,weight:2}).addTo(state.map).bindPopup('home area used for drive estimates');
+  hydrateFiltersFromUrl();
   ['search','drive','gravel','minMiles','maxMiles','sort'].forEach(id=>$(id).addEventListener('input',render));
+  window.addEventListener('popstate',()=>{hydrateFiltersFromUrl(); render();});
   render();
   window.addEventListener('resize',()=>setTimeout(refreshMapLayout,120));
   if(window.visualViewport) window.visualViewport.addEventListener('resize',()=>setTimeout(refreshMapLayout,120));
@@ -25,6 +59,7 @@ async function init(){
   if(location.hash){const id=location.hash.slice(1); setTimeout(()=>selectRoute(id),180)}
 }
 function render(){
+  updateQueryString();
   const q=$('search').value.trim().toLowerCase(), maxDrive=+$('drive').value, minGravel=+$('gravel').value, minMiles=+$('minMiles').value, maxMiles=+$('maxMiles').value;
   $('driveLabel').textContent=maxDrive; $('gravelLabel').textContent=minGravel;
   let routes=state.routes.filter(r=>r.driveMinutes<=maxDrive && r.distanceMi>=minMiles && r.distanceMi<=maxMiles && (r.surface.gravelPct??0)>=minGravel);
@@ -70,9 +105,9 @@ function drawList(routes){
     const node=tpl.content.cloneNode(true); const card=node.querySelector('.route-card'); card.dataset.id=r.id; if(state.active===r.id)card.classList.add('active');
     node.querySelector('.route-name').textContent=r.name;
     node.querySelector('.route-desc').textContent=r.description;
-    node.querySelector('.route-facts').innerHTML=`<div><dt>drive</dt><dd>${r.driveMinutes}m</dd></div><div><dt>ride</dt><dd>${r.distanceMi}mi</dd></div><div><dt>gravel</dt><dd>${r.surface.gravelPct}%</dd></div><div><dt>gain</dt><dd>${fmt(r.elevationGainFt)}ft</dd></div>`;
+    node.querySelector('.route-facts').innerHTML=`<div><dt>drive</dt><dd>${r.driveMinutes}m</dd></div><div><dt>ride</dt><dd>${r.distanceMi}mi</dd></div><div><dt>gravel</dt><dd>${r.surface.gravelPct}%</dd></div><div><dt>source</dt><dd>${r.source}</dd></div>`;
     node.querySelector('.bar-gravel').style.width=`${r.surface.gravelPct}%`; node.querySelector('.bar-paved').style.width=`${r.surface.pavedPct}%`; node.querySelector('.bar-unknown').style.width=`${r.surface.unknownPct}%`;
-    node.querySelector('.links').innerHTML=`<a href="${r.sourceUrl}" target="_blank" rel="noreferrer">source</a><a class="secondary" href="${r.gpxUrl}" target="_blank" rel="noreferrer">gpx</a><a class="secondary" href="${routeShareUrl(r)}">share</a>`;
+    node.querySelector('.links').innerHTML=routeLinksHtml(r);
     node.querySelector('button').addEventListener('click',()=>selectRoute(r.id)); list.appendChild(node);
   }
 }
