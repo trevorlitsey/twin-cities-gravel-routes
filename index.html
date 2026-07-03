@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>twin cities gravel route finder</title>
+  <link rel="preconnect" href="https://a.basemaps.cartocdn.com" />
+  <link rel="preconnect" href="https://b.basemaps.cartocdn.com" />
+  <link rel="preconnect" href="https://c.basemaps.cartocdn.com" />
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+  <link rel="stylesheet" href="./styles.css" />
+</head>
+<body>
+  <main class="app-shell">
+    <section class="sidebar">
+      <header class="hero">
+        <p class="eyebrow">minneapolis summer gravel</p>
+        <h1>twin cities gravel route finder</h1>
+        <p>public gravel + mixed-surface routes within roughly 90 minutes of the pleasant ave / minneapolis home area.</p>
+        <p class="note">first pass: routes are from gravelmap public pages/gpx. surface % is source-estimated until the osm surface-matching pass is added.</p>
+      </header>
+
+      <section class="controls" aria-label="route filters">
+        <label>search
+          <input id="search" type="search" placeholder="stillwater, luce, 30 mile…" />
+        </label>
+        <div class="grid two">
+          <label>max drive <span id="driveLabel">90</span> min
+            <input id="drive" type="range" min="10" max="100" step="5" value="90" />
+          </label>
+          <label>min gravel <span id="gravelLabel">60</span>%
+            <input id="gravel" type="range" min="0" max="100" step="5" value="60" />
+          </label>
+        </div>
+        <div class="grid two">
+          <label>min miles
+            <input id="minMiles" type="number" min="0" max="150" value="0" />
+          </label>
+          <label>max miles
+            <input id="maxMiles" type="number" min="1" max="150" value="130" />
+          </label>
+        </div>
+        <label>sort
+          <select id="sort">
+            <option value="drive">closest drive</option>
+            <option value="distance">shortest ride</option>
+            <option value="gravel">highest gravel %</option>
+            <option value="gain">most climbing</option>
+          </select>
+        </label>
+      </section>
+
+      <section class="stats" id="stats"></section>
+      <section class="route-list" id="routeList"></section>
+    </section>
+    <section class="map-wrap">
+      <div id="map"></div>
+      <div class="map-overlay">
+        <strong id="selectedTitle">pick a route</strong>
+        <span id="selectedMeta">click a line or card for source links and sharing</span>
+      </div>
+    </section>
+  </main>
+  <template id="routeCardTemplate">
+    <article class="route-card">
+      <button class="route-card-main">
+        <span class="route-name"></span>
+        <span class="route-desc"></span>
+      </button>
+      <dl class="route-facts"></dl>
+      <div class="bar" aria-hidden="true"><span class="bar-gravel"></span><span class="bar-paved"></span><span class="bar-unknown"></span></div>
+      <div class="links"></div>
+    </article>
+  </template>
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+  <script src="./app.js?v=85924d5"></script>
+</body>
+</html>
