@@ -21,6 +21,14 @@ python3 -m http.server 8766
 # open http://localhost:8766/
 ```
 
+## pwa validation
+
+```bash
+python3 scripts/check_pwa.py
+```
+
+pwa files: `manifest.webmanifest`, `sw.js`, and icons in `icons/`.
+
 ## refresh gravelmap data
 
 ```bash
